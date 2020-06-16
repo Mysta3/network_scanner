@@ -1,6 +1,23 @@
 #!/usr/bin/env python
 
 import scapy.all as scapy
+import optparse
+
+
+# Read terminal commands
+def get_arguments():
+    parser = optparse.OptionParser()  # create object class
+    # add options to use within cli
+    parser.add_option("--t", "--target", dest="target", help="Target for IP address range")
+    (options, arguments) = parser.parse_args()  # returns options and arguments
+    if not options.target:
+        # code to handle error
+        parser.error("[-] Please specify a target ip range using X.X.X.X/X format , use --help for more info.")
+    return options.target
+
+
+ip_range = get_arguments()
+
 
 def scan(ip):
     arp_request = scapy.ARP(pdst=ip) # sets the ARP.pdst field to the input ip
@@ -19,12 +36,12 @@ def scan(ip):
 
 
 def print_result(results_list):
-    print("IP\t\t\tMAC Address\n--------------------")
+    print("IP\t\tMAC Address\n--------------------")
     for client in results_list:
-        print("IP: " + client["ip"] + "\t" + "MAC: " + client["mac"])
+        print(client["ip"] + "\t" + client["mac"])
 
 
-scan_result = scan("10.0.2.1/24")
+scan_result = scan(ip_range)
 print_result(scan_result)
 
 
