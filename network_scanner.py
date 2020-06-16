@@ -10,11 +10,22 @@ def scan(ip):
     arp_request_broadcast = broadcast/arp_request # scapy allows combining objects using /
     answered_list = scapy.srp(arp_request_broadcast, timeout=1, verbose=False)[0]
     # print a table
-    print("IP\t\t\tMAC Address\n--------------------")
+
+    clients_list = []
     for element in answered_list: # access each element in a list
-        print(element[1].psrc + "\t\t" + element[1].hwsrc)
+        client_dict = {"ip":element[1].psrc, "mac":element[1].hwsrc} # create dictionary
+        clients_list.append(client_dict) # add dictionary to client_list
+    return clients_list
 
 
+def print_result(results_list):
+    print("IP\t\t\tMAC Address\n--------------------")
+    for client in results_list:
+        print("IP: " + client["ip"] + "\t" + "MAC: " + client["mac"])
 
-scan("10.0.2.1/24")
+
+scan_result = scan("10.0.2.1/24")
+print_result(scan_result)
+
+
 
